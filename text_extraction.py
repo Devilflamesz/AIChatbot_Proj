@@ -98,7 +98,7 @@ print(f"Text: {example_text}\nPrediction: {prediction}\n")
 
 
 #txtai test
-from txtai.pipeline import Textractor
+#from txtai.pipeline import Textractor
 #
 # # Create textractor model
 # textractor = Textractor()
