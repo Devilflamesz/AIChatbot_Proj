@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload and Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 400px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            display: block;
+            margin: 20px auto;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .alert {
+            padding: 15px;
+            margin-top: 20px;
+            color: white;
+        }
+        .success {
+            background-color: #4CAF50;
+        }
+        .error {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload File for Classification</h1>
+        <form id="uploadForm">
+            <input type="file" id="fileInput" name="file">
+            <button type="submit">Upload</button>
+            <br>
+            <button type="button" id="reloadButton">Clear</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            const resultDiv = document.getElementById('result');
+
+            if (response.ok) {
+                resultDiv.className = 'alert success';
+                resultDiv.textContent = `File classified as: ${result.classification}`;
+            } else {
+                resultDiv.className = 'alert error';
+                resultDiv.textContent = `Error: ${result.error}`;
+            }
+        });
+
+        document.getElementById('fileInput').addEventListener('change', () => {
+            document.getElementById('result').textContent = '';
+            document.getElementById('result').className = '';
+        });
+
+        document.getElementById('reloadButton').addEventListener('click', () => {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('result').className = '';
+        });
+    </script>
+</body>
+</html>
